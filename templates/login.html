@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Travel Companion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .auth-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .switch-form {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .success-message {
+            color: green;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+<!--        {% if error %}-->
+<!--        <div class="error-message">-->
+<!--            {{ error }}-->
+<!--        </div>-->
+<!--        {% endif %}-->
+<!--        {% if success %}-->
+<!--        <div class="success-message">-->
+<!--            {{ success }}-->
+<!--        </div>-->
+<!--        {% endif %}-->
+        <form action="/login" method="post">
+            <h2>Вход</h2>
+            <div class="form-group">
+                <label for="username">Имя пользователя:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Войти</button>
+        </form>
+        <div class="switch-form">
+            <p>Нет аккаунта? <a href="/register.html">Зарегистрироваться</a></p>
+        </div>
+    </div>
+</body>
+</html> 
