@@ -108,7 +108,7 @@
                    name="query" 
                    class="search-input" 
                    placeholder="Введите название места или адрес..."
-                   value="{{ search_query if search_query else '' }}"
+                   value="{{ search_query }}"
                    required>
             <select name="category" class="category-select">
                 <option value="entertainment" {% if category == 'entertainment' %}selected{% endif %}>Развлечения</option>

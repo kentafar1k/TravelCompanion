@@ -66,16 +66,16 @@
 </head>
 <body>
     <div class="auth-container">
-<!--        {% if error %}-->
-<!--        <div class="error-message">-->
-<!--            {{ error }}-->
-<!--        </div>-->
-<!--        {% endif %}-->
-<!--        {% if success %}-->
-<!--        <div class="success-message">-->
-<!--            {{ success }}-->
-<!--        </div>-->
-<!--        {% endif %}-->
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+        {% if success %}
+        <div class="success-message">
+            {{ success }}
+        </div>
+        {% endif %}
         <form action="/register" method="post">
             <h2>Регистрация</h2>
             <div class="form-group">
@@ -89,7 +89,7 @@
             <button type="submit">Зарегистрироваться</button>
         </form>
         <div class="switch-form">
-            <p>Уже есть аккаунт? <a href="/login.html">Войти</a></p>
+            <p>Уже есть аккаунт? <a href="/login">Войти</a></p>
         </div>
     </div>
 </body>
