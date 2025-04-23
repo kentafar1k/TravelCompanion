@@ -8,6 +8,9 @@ from core.security import verify_password
 from typing import Optional
 import math
 
+#login  keklik
+#pwd    6823
+
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
