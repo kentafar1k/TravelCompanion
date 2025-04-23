@@ -34,12 +34,11 @@ def get_place_by_details(db: Session, name: str, address: str, city: str):
         models.Place.city == city
     ).first()
 
-def create_place(db: Session, name: str, address: str, city: str, category: str, url: str, rating: Optional[float] = None):
+def create_place(db: Session, name: str, address: str, city: str, url: str, rating: Optional[float] = None):
     db_place = models.Place(
         name=name,
         address=address,
         city=city,
-        category=category,
         url=url,
         rating=rating
     )
@@ -48,11 +47,11 @@ def create_place(db: Session, name: str, address: str, city: str, category: str,
     db.refresh(db_place)
     return db_place
 
-def get_or_create_place(db: Session, name: str, address: str, city: str, category: str, url: str, rating: Optional[float] = None):
+def get_or_create_place(db: Session, name: str, address: str, city: str, url: str, rating: Optional[float] = None):
     db_place = get_place_by_details(db, name, address, city)
     if db_place:
         return db_place
-    return create_place(db, name, address, city, category, url, rating)
+    return create_place(db, name, address, city, url, rating)
 
 def get_user_recommendations(db: Session, user_id: int):
     return db.query(models.Recommendation).filter(models.Recommendation.user_id == user_id).all()

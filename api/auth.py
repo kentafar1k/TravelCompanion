@@ -101,7 +101,6 @@ async def index(request: Request, db: Session = Depends(get_db)):
                     "id": place.id,
                     "name": place.name,
                     "address": place.address,
-                    "category": place.category,
                     "url": place.url,
                     "rating": place.rating
                 })
@@ -113,7 +112,6 @@ async def index(request: Request, db: Session = Depends(get_db)):
             "username": username,
             "places": [],
             "search_query": "",
-            "category": "entertainment",
             "recommendations": recommendations
         }
     )
@@ -122,7 +120,6 @@ async def index(request: Request, db: Session = Depends(get_db)):
 async def search(
     request: Request,
     query: str,
-    category: str,
     city: str = "Вологда",
     db: Session = Depends(get_db)
 ):
@@ -137,7 +134,7 @@ async def search(
         return response
 
     # Поиск мест через Яндекс.Карты (симуляция)
-    found_places = yandex_parser.search_places(query, city, category)
+    found_places = yandex_parser.search_places(query, city)
     
     # Сохраняем найденные места в базу данных
     places = []
@@ -147,7 +144,6 @@ async def search(
             name=place_data["name"],
             address=place_data["address"],
             city=city,
-            category=place_data["category"],
             url=place_data["url"],
             rating=place_data["rating"]
         )
@@ -155,7 +151,6 @@ async def search(
             "id": place.id,
             "name": place.name,
             "address": place.address,
-            "category": place.category,
             "url": place.url,
             "rating": place.rating
         })
@@ -174,7 +169,6 @@ async def search(
                     "id": place.id,
                     "name": place.name,
                     "address": place.address,
-                    "category": place.category,
                     "url": place.url,
                     "rating": place.rating
                 })
@@ -186,7 +180,6 @@ async def search(
             "username": username,
             "places": places,
             "search_query": query,
-            "category": category,
             "recommendations": recommendations
         }
     )

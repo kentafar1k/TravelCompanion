@@ -22,7 +22,6 @@ class Place(Base):
     name = Column(String, index=True)
     address = Column(String)
     city = Column(String, index=True)
-    category = Column(String, index=True)
     url = Column(String)
     rating = Column(Float, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

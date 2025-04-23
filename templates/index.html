@@ -84,14 +84,6 @@
             margin-bottom: 1rem;
             box-sizing: border-box;
         }
-        .category-select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            background-color: white;
-        }
         .search-btn {
             width: 100%;
             padding: 0.75rem;
@@ -128,10 +120,6 @@
         }
         .place-address {
             color: #666;
-            margin-bottom: 0.5rem;
-        }
-        .place-category {
-            color: #007bff;
             margin-bottom: 0.5rem;
         }
         .place-rating {
@@ -186,10 +174,6 @@
                        value="{{ search_query }}"
                        required>
                 <input type="hidden" name="city" value="Вологда">
-                <select name="category" class="category-select">
-                    <option value="entertainment" {% if category == 'entertainment' %}selected{% endif %}>Развлечения</option>
-                    <option value="food" {% if category == 'food' %}selected{% endif %}>Еда</option>
-                </select>
                 <button type="submit" class="search-btn">Поиск</button>
             </form>
 
@@ -201,7 +185,6 @@
                         <a href="{{ place.url }}" target="_blank">{{ place.name }}</a>
                     </div>
                     <div class="place-address">{{ place.address }}</div>
-                    <div class="place-category">{{ place.category }}</div>
                     {% if place.rating %}
                     <div class="place-rating">Рейтинг: {{ place.rating }}</div>
                     {% endif %}
@@ -226,7 +209,6 @@
                         <a href="{{ place.url }}" target="_blank">{{ place.name }}</a>
                     </div>
                     <div class="place-address">{{ place.address }}</div>
-                    <div class="place-category">{{ place.category }}</div>
                     {% if place.rating %}
                     <div class="place-rating">Рейтинг: {{ place.rating }}</div>
                     {% endif %}
