@@ -5,17 +5,21 @@ from sqlalchemy.orm import Session
 from db.database import get_db
 from db import crud, models
 from core.security import verify_password
-from typing import Optional
+from typing import Optional, List, Dict
 import math
+from services.yandex_parser import YandexMapsParser
 
-#login  keklik
-#pwd    6823
+#login  admin
+#pwd    admin123
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 # Роли пользователей (для админки)
 ADMIN_USERS = {"admin"}  # Здесь можно добавить имена администраторов
+
+# Инициализация парсера
+yandex_parser = YandexMapsParser()
 
 @router.post("/register")
 async def register(
@@ -83,6 +87,25 @@ async def index(request: Request, db: Session = Depends(get_db)):
         response.delete_cookie(key="session")
         return response
 
+    # Получаем рекомендации пользователя
+    user_recommendations = db.query(models.Recommendation).filter(
+        models.Recommendation.user_id == user.id
+    ).all()
+    
+    recommendations = []
+    if user_recommendations:
+        for rec in user_recommendations:
+            place = db.query(models.Place).filter(models.Place.id == rec.place_id).first()
+            if place:
+                recommendations.append({
+                    "id": place.id,
+                    "name": place.name,
+                    "address": place.address,
+                    "category": place.category,
+                    "url": place.url,
+                    "rating": place.rating
+                })
+
     return templates.TemplateResponse(
         "index.html",
         {
@@ -90,9 +113,137 @@ async def index(request: Request, db: Session = Depends(get_db)):
             "username": username,
             "places": [],
             "search_query": "",
-            "category": "entertainment"
+            "category": "entertainment",
+            "recommendations": recommendations
         }
     )
+
+@router.get("/search")
+async def search(
+    request: Request,
+    query: str,
+    category: str,
+    city: str = "Вологда",
+    db: Session = Depends(get_db)
+):
+    username = request.cookies.get("session")
+    if not username:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    user = crud.get_user(db, username=username)
+    if not user:
+        response = RedirectResponse(url="/login", status_code=303)
+        response.delete_cookie(key="session")
+        return response
+
+    # Поиск мест через Яндекс.Карты (симуляция)
+    found_places = yandex_parser.search_places(query, city, category)
+    
+    # Сохраняем найденные места в базу данных
+    places = []
+    for place_data in found_places:
+        place = crud.get_or_create_place(
+            db,
+            name=place_data["name"],
+            address=place_data["address"],
+            city=city,
+            category=place_data["category"],
+            url=place_data["url"],
+            rating=place_data["rating"]
+        )
+        places.append({
+            "id": place.id,
+            "name": place.name,
+            "address": place.address,
+            "category": place.category,
+            "url": place.url,
+            "rating": place.rating
+        })
+    
+    # Получаем рекомендации пользователя
+    user_recommendations = db.query(models.Recommendation).filter(
+        models.Recommendation.user_id == user.id
+    ).all()
+    
+    recommendations = []
+    if user_recommendations:
+        for rec in user_recommendations:
+            place = db.query(models.Place).filter(models.Place.id == rec.place_id).first()
+            if place:
+                recommendations.append({
+                    "id": place.id,
+                    "name": place.name,
+                    "address": place.address,
+                    "category": place.category,
+                    "url": place.url,
+                    "rating": place.rating
+                })
+
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "username": username,
+            "places": places,
+            "search_query": query,
+            "category": category,
+            "recommendations": recommendations
+        }
+    )
+
+@router.post("/add_recommendation")
+async def add_recommendation(
+    request: Request,
+    place_id: int = Form(...),
+    db: Session = Depends(get_db)
+):
+    username = request.cookies.get("session")
+    if not username:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    user = crud.get_user(db, username=username)
+    if not user:
+        response = RedirectResponse(url="/login", status_code=303)
+        response.delete_cookie(key="session")
+        return response
+    
+    # Добавляем рекомендацию
+    place = crud.get_place(db, place_id)
+    if not place:
+        return RedirectResponse(url="/index", status_code=303)
+    
+    crud.add_recommendation(db, user.id, place.id)
+    
+    # Получаем параметры последнего поиска из реферера или формы
+    referer = request.headers.get('referer', '')
+    if 'search' in referer and 'query=' in referer:
+        # Возвращаемся на страницу поиска с теми же параметрами
+        return RedirectResponse(url=referer, status_code=303)
+    else:
+        # Если нет реферера, просто возвращаемся на главную
+        return RedirectResponse(url="/index", status_code=303)
+
+@router.post("/remove_recommendation")
+async def remove_recommendation(
+    request: Request,
+    place_id: int = Form(...),
+    db: Session = Depends(get_db)
+):
+    username = request.cookies.get("session")
+    if not username:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    user = crud.get_user(db, username=username)
+    if not user:
+        response = RedirectResponse(url="/login", status_code=303)
+        response.delete_cookie(key="session")
+        return response
+    
+    # Удаляем рекомендацию
+    crud.remove_recommendation(db, user.id, place_id)
+    
+    # Возвращаемся на главную страницу
+    return RedirectResponse(url="/index", status_code=303)
 
 @router.get("/admin")
 async def admin_panel(
@@ -158,41 +309,3 @@ async def delete_user(
         db.commit()
     
     return RedirectResponse(url="/admin", status_code=303)
-
-@router.get("/search")
-async def search(
-    request: Request,
-    query: str,
-    category: str,
-    db: Session = Depends(get_db)
-):
-    username = request.cookies.get("session")
-    if not username:
-        return RedirectResponse(url="/login", status_code=303)
-    
-    user = crud.get_user(db, username=username)
-    if not user:
-        response = RedirectResponse(url="/login", status_code=303)
-        response.delete_cookie(key="session")
-        return response
-
-    # Здесь будет логика поиска мест
-    # Пока возвращаем тестовые данные
-    places = [
-        {
-            "name": "Тестовое место",
-            "address": "Тестовый адрес, 123",
-            "category": "Развлечения" if category == "entertainment" else "Еда"
-        }
-    ] if query else []
-
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "username": username,
-            "places": places,
-            "search_query": query,
-            "category": category
-        }
-    )

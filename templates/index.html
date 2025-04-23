@@ -34,13 +34,44 @@
         .logout-btn:hover {
             background-color: #c82333;
         }
+        .tabs {
+            display: flex;
+            margin-top: 2rem;
+            background-color: white;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .tab.active {
+            border-bottom-color: #007bff;
+            font-weight: bold;
+        }
+        .tab:hover {
+            background-color: #f5f5f5;
+        }
         .content {
             max-width: 800px;
-            margin: 2rem auto;
+            margin: 0 auto;
             padding: 2rem;
             background-color: white;
-            border-radius: 8px;
+            border-radius: 0 0 8px 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
         .search-form {
             margin-bottom: 2rem;
@@ -81,11 +112,19 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             margin-bottom: 1rem;
+            position: relative;
         }
         .place-name {
             font-size: 1.2rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
+        }
+        .place-name a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .place-name a:hover {
+            text-decoration: underline;
         }
         .place-address {
             color: #666;
@@ -93,6 +132,35 @@
         }
         .place-category {
             color: #007bff;
+            margin-bottom: 0.5rem;
+        }
+        .place-rating {
+            color: #f39c12;
+            margin-bottom: 0.5rem;
+        }
+        .city-indicator {
+            color: #28a745;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .add-btn {
+            padding: 0.5rem 1rem;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        .add-btn:hover {
+            background-color: #218838;
+        }
+        .recommendation-empty {
+            text-align: center;
+            color: #666;
+            padding: 2rem;
         }
     </style>
 </head>
@@ -102,34 +170,104 @@
         <a href="/logout" class="logout-btn">Выйти</a>
     </div>
 
-    <div class="content">
-        <form class="search-form" action="/search" method="get">
-            <input type="text" 
-                   name="query" 
-                   class="search-input" 
-                   placeholder="Введите название места или адрес..."
-                   value="{{ search_query }}"
-                   required>
-            <select name="category" class="category-select">
-                <option value="entertainment" {% if category == 'entertainment' %}selected{% endif %}>Развлечения</option>
-                <option value="food" {% if category == 'food' %}selected{% endif %}>Еда</option>
-            </select>
-            <button type="submit" class="search-btn">Поиск</button>
-        </form>
-
-        {% if places %}
-        <div class="results">
-            {% for place in places %}
-            <div class="place-card">
-                <div class="place-name">{{ place.name }}</div>
-                <div class="place-address">{{ place.address }}</div>
-                <div class="place-category">{{ place.category }}</div>
-            </div>
-            {% endfor %}
-        </div>
-        {% elif search_query %}
-        <p>По вашему запросу ничего не найдено.</p>
-        {% endif %}
+    <div class="tabs">
+        <div class="tab active" data-tab="search">Поиск</div>
+        <div class="tab" data-tab="recommendations">Рекомендации</div>
     </div>
+
+    <div class="content">
+        <div id="search-tab" class="tab-content active">
+            <div class="city-indicator">Поиск мест в городе Вологда</div>
+            <form class="search-form" action="/search" method="get">
+                <input type="text" 
+                       name="query" 
+                       class="search-input" 
+                       placeholder="Введите название места или адрес..."
+                       value="{{ search_query }}"
+                       required>
+                <input type="hidden" name="city" value="Вологда">
+                <select name="category" class="category-select">
+                    <option value="entertainment" {% if category == 'entertainment' %}selected{% endif %}>Развлечения</option>
+                    <option value="food" {% if category == 'food' %}selected{% endif %}>Еда</option>
+                </select>
+                <button type="submit" class="search-btn">Поиск</button>
+            </form>
+
+            {% if places %}
+            <div class="results">
+                {% for place in places %}
+                <div class="place-card">
+                    <div class="place-name">
+                        <a href="{{ place.url }}" target="_blank">{{ place.name }}</a>
+                    </div>
+                    <div class="place-address">{{ place.address }}</div>
+                    <div class="place-category">{{ place.category }}</div>
+                    {% if place.rating %}
+                    <div class="place-rating">Рейтинг: {{ place.rating }}</div>
+                    {% endif %}
+                    <form action="/add_recommendation" method="post">
+                        <input type="hidden" name="place_id" value="{{ place.id }}">
+                        <button type="submit" class="add-btn">Добавить в рекомендации</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+            {% elif search_query %}
+            <p>По вашему запросу ничего не найдено.</p>
+            {% endif %}
+        </div>
+        
+        <div id="recommendations-tab" class="tab-content">
+            {% if recommendations %}
+            <div class="results">
+                {% for place in recommendations %}
+                <div class="place-card">
+                    <div class="place-name">
+                        <a href="{{ place.url }}" target="_blank">{{ place.name }}</a>
+                    </div>
+                    <div class="place-address">{{ place.address }}</div>
+                    <div class="place-category">{{ place.category }}</div>
+                    {% if place.rating %}
+                    <div class="place-rating">Рейтинг: {{ place.rating }}</div>
+                    {% endif %}
+                    <form action="/remove_recommendation" method="post">
+                        <input type="hidden" name="place_id" value="{{ place.id }}">
+                        <button type="submit" class="add-btn" style="background-color: #dc3545;">Удалить из рекомендаций</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="recommendation-empty">
+                <p>У вас пока нет рекомендаций.</p>
+                <p>Воспользуйтесь поиском и добавьте интересные места!</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all tab contents
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show the corresponding tab content
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-tab').classList.add('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
