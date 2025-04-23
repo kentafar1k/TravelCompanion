@@ -1,54 +1,33 @@
-import requests
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
 class YandexMapsParser:
     """
-    Сервис для парсинга данных из Яндекс.Карт
-    (Примечание: это псевдо-реализация, так как для реального API Яндекс.Карт 
-    нужен API ключ и официальный доступ. Здесь симулируется работа)
+    Сервис для работы с Яндекс.Картами
     """
     
-    def search_places(self, query: str, city: str, limit: int = 3) -> List[Dict[str, Any]]:
+    def search_places(self, query: str, city: str, limit: int = 1) -> List[Dict[str, Any]]:
         """
-        Поиск мест в Яндекс.Картах
+        Создает прямую ссылку на поиск в Яндекс.Картах
         
         Args:
             query: Поисковый запрос
             city: Город для поиска
-            limit: Максимальное количество результатов
+            limit: Максимальное количество результатов (игнорируется, всегда возвращается 1)
             
         Returns:
-            List[Dict[str, Any]]: Список найденных мест
+            List[Dict[str, Any]]: Список с одной ссылкой на поиск в Яндекс.Картах
         """
+        # Формируем поисковый запрос для Яндекс.Карт
+        search_query = f"{query} {city}"
         
-        # В реальном приложении здесь был бы запрос к API Яндекс.Карт
-        # Возвращаем тестовые данные для демонстрации
+        # Формируем ссылку на Яндекс.Карты с поисковым запросом
+        url = f"https://yandex.ru/maps/?text={search_query.replace(' ', '%20')}"
         
-        base_url = "https://yandex.ru/maps/"
-        
-        # Генерируем тестовые данные на основе запроса
-        places = [
-            {
-                "id": 1,
-                "name": f"Кинотеатр '{query.capitalize()}'",
-                "address": f"г. {city}, ул. Ленина, 123",
-                "url": f"{base_url}?text=Кинотеатр%20{query}%20{city}",
-                "rating": 4.7
-            },
-            {
-                "id": 2,
-                "name": f"Кафе '{query.capitalize()}'",
-                "address": f"г. {city}, ул. Пушкина, 15",
-                "url": f"{base_url}?text=Кафе%20{query}%20{city}",
-                "rating": 4.4
-            },
-            {
-                "id": 3,
-                "name": f"Музей '{query.capitalize()}'",
-                "address": f"г. {city}, ул. Мира, 78",
-                "url": f"{base_url}?text=Музей%20{query}%20{city}",
-                "rating": 4.8
-            }
-        ]
-        
-        return places[:limit] 
+        # Возвращаем один результат с прямой ссылкой
+        return [{
+            "id": 1,
+            "name": f"Результаты поиска '{search_query}' на Яндекс.Картах",
+            "address": f"г. {city}",
+            "url": url,
+            "rating": 5.0
+        }] 
