@@ -14,7 +14,7 @@ class TestYandexMapsParser(unittest.TestCase):
     
     def test_search_places_returns_one_result(self):
         """
-        Проверяет, что метод search_places возвращает один результат
+        Проверяет, что метод search_places возвращает 1 результат
         """
         results = self.parser.search_places("кафе", "Вологда")
         
