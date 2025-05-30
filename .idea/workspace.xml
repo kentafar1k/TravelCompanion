@@ -45,20 +45,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;FastAPI.TravelCompanion.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/TravelCompanion-fuature-m-1-1-add-app-places-and-create-db-sqlite&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "FastAPI.TravelCompanion.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "E:/programming/Tech Tasks",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="TravelCompanion" type="Python.FastAPI">
       <option name="file" value="$PROJECT_DIR$/main.py" />
@@ -103,7 +103,16 @@
       <workItem from="1744966207846" duration="2120000" />
       <workItem from="1744968681501" duration="4400000" />
       <workItem from="1745410734294" duration="6746000" />
-      <workItem from="1745481944107" duration="901000" />
+      <workItem from="1745481944107" duration="1289000" />
+      <workItem from="1745487402456" duration="18000" />
+      <workItem from="1745501076871" duration="1398000" />
+      <workItem from="1745594283023" duration="1136000" />
+      <workItem from="1745746722266" duration="598000" />
+      <workItem from="1745930326603" duration="2940000" />
+      <workItem from="1745941204789" duration="1499000" />
+      <workItem from="1746702563500" duration="4436000" />
+      <workItem from="1746884508381" duration="832000" />
+      <workItem from="1746948789509" duration="673000" />
     </task>
     <servers />
   </component>
@@ -111,6 +120,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TravelCompanion$TravelCompanion.coverage" NAME="TravelCompanion Coverage Results" MODIFIED="1745416737473" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/TravelCompanion$TravelCompanion.coverage" NAME="TravelCompanion Coverage Results" MODIFIED="1746704270916" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>
